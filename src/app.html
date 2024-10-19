@@ -31,16 +31,7 @@
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
             attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         }).addTo(map);
-        if (navigator.geolocation) {
-            navigator.geolocation.getCurrentPosition(function(position) {
-                var lat = position.coords.latitude;
-                var lon = position.coords.longitude;
-                map.setView([lat, lon], 18);
-                L.marker([lat, lon]).addTo(map).bindPopup('Você está aqui!').openPopup();
-            });
-        } else {
-            alert("Geolocalização não é suportada pelo seu navegador.");
-        }
+        
         var geojsonFeature = {
             "type": "Feature",
             "properties": {
@@ -55,9 +46,30 @@
         };
         L.geoJSON(geojsonFeature).addTo(map).bindPopup(geojsonFeature.properties.popupContent).openPopup();
 
-		googleStreetView = L.tileLayer('http://mt0.google.com/vt/lyrs=m&hl=en&x={x}&y={y}&z={z}', {
-			attribution: 'Google Street View'
-		}).addTo(map);
+        googleStreetView = L.tileLayer('http://mt0.google.com/vt/lyrs=m&hl=en&x={x}&y={y}&z={z}', {
+            attribution: 'Google Street View'
+        }).addTo(map);
+
+        async function setUserLocation() {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(function(position) {
+                    var lat = position.coords.latitude;
+                    var lon = position.coords.longitude;
+                    map.setView([lat, lon], 18);
+                    L.marker([lat, lon]).addTo(map).bindPopup('Você está aqui!').openPopup();
+                }, function(error) {
+                    console.error("Erro ao obter localização: ", error);
+                }, {
+                    enableHighAccuracy: true, // Tenta obter a localização mais precisa possível
+                    timeout: 5000, // Tempo máximo para obter a localização
+                    maximumAge: 0 // Não usa localização em cache
+                });
+            } else {
+                alert("Geolocalização não é suportada pelo seu navegador.");
+            }
+        }
+
+        setUserLocation();
     </script>
 </body>
 </html>
