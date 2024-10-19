@@ -54,6 +54,10 @@
             }
         };
         L.geoJSON(geojsonFeature).addTo(map).bindPopup(geojsonFeature.properties.popupContent).openPopup();
+
+		googleStreetView = L.tileLayer('http://mt0.google.com/vt/lyrs=m&hl=en&x={x}&y={y}&z={z}', {
+			attribution: 'Google Street View'
+		}).addTo(map);
     </script>
 </body>
 </html>
